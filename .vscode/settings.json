@@ -1,0 +1,6 @@
+{
+    "java.project.sourcePaths": [
+        "src/main/java"
+    ],
+    "java.format.settings.url": "eclipse-java-formatter.xml"
+}

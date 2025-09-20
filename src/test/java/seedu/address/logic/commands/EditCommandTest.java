@@ -29,7 +29,8 @@ import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for EditCommand.
+ * Contains integration tests (interaction with the Model) and unit tests for
+ * EditCommand.
  */
 public class EditCommandTest {
 
@@ -130,8 +131,8 @@ public class EditCommandTest {
     }
 
     /**
-     * Edit filtered list where index is larger than size of filtered list,
-     * but smaller than size of address book
+     * Edit filtered list where index is larger than size of filtered list, but
+     * smaller than size of address book
      */
     @Test
     public void execute_invalidPersonIndexFilteredList_failure() {
