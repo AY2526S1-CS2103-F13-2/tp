@@ -53,7 +53,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 <img src="images/huffle-buffle.png" width="200px">
 
 [[github](http://github.com/Huffle-Buffle)]
-[[portfolio](team/Huffle-Buffle.md)]
+[[portfolio](team/huffle-buffle.md)]
 
 * Role: Developer
 * Responsibilities: UI
