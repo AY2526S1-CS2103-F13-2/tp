@@ -87,11 +87,65 @@ Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 
+### Use case: `add`
+<div style="border:2px solid #444; padding:10px; border-radius:8px;">
+Example 1</br> 
+System: Insurance Management App</br>
+Actor: Insurance Agent</br>
+
+MSS:
+
+1. Agent issues add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]... command.
+
+2. System validates each parameter.
+
+3. System checks for duplicates using (name + phone).
+
+4. If valid, system creates a new client entry and updates the display.
+
+- Use case ends.
+
+Extensions:
+
+- 2a. Missing required fields. </br>
+- 2a1. System displays: “ERROR: Missing required fields. Required: n/, p/, e/, a/.”
+- Use case ends.</br>
+</br>
+- 2b. Invalid parameter format.
+- 2b1. System displays specific error message (e.g., “Phone must be a valid number”).
+- 2b2. Agent corrects input.
+- Use case resumes from step 2.</br>
+</br>
+- 3a. Duplicate detected.
+- 3a1. System displays: “DUPLICATE CLIENT: A client with the same phone/email already exists.”
+- 3a2. Agent may use edit INDEX instead.
+- Use case ends.
+</div>
+
+
 ### Listing all persons : `list`
 
 Shows a list of all persons in the address book.
 
 Format: `list`
+
+### Use case: list 
+<div style="border:2px solid #444; padding:10px; border-radius:8px;">
+Example 1</br> 
+System: Insurance Management App</br>
+Actor: Insurance Agent</br>
+
+MSS:
+
+1. Agent issue list command
+
+2. System display all the persons in the address book
+
+3. Use case ends
+
+</div>
+
+
 
 ### Editing a person : `edit`
 
@@ -109,6 +163,51 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+
+### Use case: `edit` 
+<div style="border:2px solid #444; padding:10px; border-radius:8px;">
+System: Insurance Management App</br>
+Actor: Insurance Agent</br>
+
+MSS:
+
+1. Agent issues edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... command.</br>
+
+2. System validates the index and input fields.
+
+3. System checks for duplicates (name + phone).
+
+4. If valid, system updates client details and displays confirmation.
+- Use case ends.</br>
+
+Extensions:
+
+- 2a. Index out of bounds.
+- 2a1. System displays error: “Index not found.”
+- Use case ends.</br>
+</br>
+- 2b. Invalid parameter format.
+- 2b1. System displays error specifying invalid field.
+- 2b2. Agent corrects input.
+- Use case resumes from step 2.</br>
+</br>
+
+- 3a. Duplicate detected.
+- 3a1. System displays duplicate warning.
+- Use case ends.</br>
+</br>
+- 4a. Tag replacement error.
+- 4a1. System rejects entire edit if one invalid tag is found.
+- Use case ends.</br>
+</br>
+- 4b. Storage failure occurs.
+- 4b1. System displays: “Couldn’t save data. Your edit was cancelled.”
+- Use case ends.
+</div>
+
+
+
+
 
 ### Locating persons by name: `find`
 
@@ -128,6 +227,40 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
+### Use case: `find` 
+<div style="border:2px solid #444; padding:10px; border-radius:8px;">
+System: Insurance Management App</br>
+Actor: Insurance Agent</br>
+
+MSS:
+
+1. Agent issues find STRING command.
+
+2. System searches client records by name, UID, email, or phone.
+
+3. System returns matching records in a tabular list (CLI) or as clickable results (GUI).
+
+4. Agent views or selects the desired client record.
+- Use case ends.</br>
+
+Extensions:
+
+- 2a. No matches found.
+- 2a1. System displays: “No clients matched the provided filters.”
+- Use case ends.</br>
+</br>
+- 2b. Invalid parameter provided (e.g., malformed input).
+- 2b1. System displays error specifying the issue (e.g., invalid characters).
+- 2b2. Agent re-enters correct input.
+- Use case resumes from step 2.</br>
+</br>
+- 2c. Conflicting filters applied.
+- 2c1. System displays: "No clients matched all provided filters."
+- Use case ends.
+
+</div>
+
+
 ### Deleting a person : `delete`
 
 Deletes the specified person from the address book.
@@ -142,6 +275,31 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
+### Use case: `delete` 
+<div style="border:2px solid #444; padding:10px; border-radius:8px;">
+System: Insurance Management App</br>
+Actor: Insurance Agent</br>
+
+MSS:
+
+1. Agent issues delete INDEX command.
+
+2. System verifies the index.
+
+3. System deletes the client record at that index.
+
+4. System displays confirmation: “Deleted Person: <Client details>”.
+- Use case ends.
+
+Extensions:
+
+- 2a. Index out of bounds.
+- 2a1. System displays error: “Index not found.”
+- Use case ends.
+</div>
+
+
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -153,6 +311,67 @@ Format: `clear`
 Exits the program.
 
 Format: `exit`
+
+### Command guide : `help`
+
+Display the command guide.
+
+Format: `help`
+
+
+### Use case: `help` 
+<div style="border:2px solid #444; padding:10px; border-radius:8px;">
+System: Insurance Management App</br>
+Actor: Insurance Agent</br>
+
+MSS:
+
+1. Agent issues help command.
+
+2. System displays a list of commands with usage details.
+
+3. Agent reads and continues working.
+- Use case ends.</br>
+</br>
+
+Extensions:
+
+- 1a. Agent types synonym (e.g., guide, man).
+- 1a1. System displays: “Unknown command. Type help to see available commands.”
+- Use case ends.
+</div>
+
+### Command guide : `stats`
+
+Display the summary statistics.
+
+Format: `stats`
+
+
+### Use case: `stats` 
+<div style="border:2px solid #444; padding:10px; border-radius:8px;">
+System: Insurance Management App</br>
+Actor: Insurance Agent</br>
+
+MSS:
+
+1. Agent issues stats command.
+
+2. System analyses customer data.
+
+3. System displays summary table (Packages vs. No. of Customers).
+
+4. Agent reviews performance insights.
+- Use case ends.</br>
+</br>
+
+Extensions:
+- 2a. No data available.
+- 2a1. System displays: “No statistics available – no clients found.”
+- Use case ends.
+</div>
+
+
 
 ### Saving the data
 
