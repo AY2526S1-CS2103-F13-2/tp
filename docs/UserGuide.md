@@ -79,39 +79,32 @@ Examples:
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 
 ### Use case: `add`
-<div style="border:2px solid #444; padding:10px; border-radius:8px;">
-Example 1</br> 
-System: Insurance Management App</br>
-Actor: Insurance Agent</br>
 
-MSS:
-
-1. Agent issues add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]... command.
-
-2. System validates each parameter.
-
-3. System checks for duplicates using (name + phone).
-
-4. If valid, system creates a new client entry and updates the display.
-
-- Use case ends.
-
-Extensions:
-
-- 2a. Missing required fields. </br>
-- 2a1. System displays: “ERROR: Missing required fields. Required: n/, p/, e/, a/.”
-- Use case ends.</br>
-</br>
-- 2b. Invalid parameter format.
-- 2b1. System displays specific error message (e.g., “Phone must be a valid number”).
-- 2b2. Agent corrects input.
-- Use case resumes from step 2.</br>
-</br>
-- 3a. Duplicate detected.
-- 3a1. System displays: “DUPLICATE CLIENT: A client with the same phone/email already exists.”
-- 3a2. Agent may use edit INDEX instead.
-- Use case ends.
-</div>
+> **Example 1**  
+> **System:** Insurance Management App  
+> **Actor:** Insurance Agent  
+>
+> **MSS:**  
+> 1. Agent issues add n/NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]... command.  
+> 2. System validates each parameter.  
+> 3. System checks for duplicates using (name + phone).  
+> 4. If valid, system creates a new client entry and updates the display.  
+>    - Use case ends.  
+>
+> **Extensions:**  
+> - 2a. Missing required fields.  
+>   - 2a1. System displays: “ERROR: Missing required fields. Required: n/, p/, e/, a/.”  
+>   - Use case ends.  
+>
+> - 2b. Invalid parameter format.  
+>   - 2b1. System displays specific error message (e.g., “Phone must be a valid number”).  
+>   - 2b2. Agent corrects input.  
+>   - Use case resumes from step 2.  
+>
+> - 3a. Duplicate detected.  
+>   - 3a1. System displays: “DUPLICATE CLIENT: A client with the same phone/email already exists.”  
+>   - 3a2. Agent may use edit INDEX instead.  
+>   - Use case ends.  
 
 
 ### Listing all persons : `list`
