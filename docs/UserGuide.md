@@ -164,50 +164,39 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
-### Use case: `edit` 
-<div style="border:2px solid #444; padding:10px; border-radius:8px;">
-System: Insurance Management App</br>
-Actor: Insurance Agent</br>
+### Use case: `edit`
 
-MSS:
-
-1. Agent issues edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... command.</br>
-
-2. System validates the index and input fields.
-
-3. System checks for duplicates (name + phone).
-
-4. If valid, system updates client details and displays confirmation.
-- Use case ends.</br>
-
-Extensions:
-
-- 2a. Index out of bounds.
-- 2a1. System displays error: “Index not found.”
-- Use case ends.</br>
-</br>
-- 2b. Invalid parameter format.
-- 2b1. System displays error specifying invalid field.
-- 2b2. Agent corrects input.
-- Use case resumes from step 2.</br>
-</br>
-
-- 3a. Duplicate detected.
-- 3a1. System displays duplicate warning.
-- Use case ends.</br>
-</br>
-- 4a. Tag replacement error.
-- 4a1. System rejects entire edit if one invalid tag is found.
-- Use case ends.</br>
-</br>
-- 4b. Storage failure occurs.
-- 4b1. System displays: “Couldn’t save data. Your edit was cancelled.”
-- Use case ends.
-</div>
-
-
-
-
+> **System:** Insurance Management App  
+> **Actor:** Insurance Agent  
+>
+> **MSS:**  
+> 1. Agent issues edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... command.  
+> 2. System validates the index and input fields.  
+> 3. System checks for duplicates (name + phone).  
+> 4. If valid, system updates client details and displays confirmation.  
+>    - Use case ends.  
+>
+> **Extensions:**  
+> - 2a. Index out of bounds.  
+>   - 2a1. System displays error: “Index not found.”  
+>   - Use case ends.  
+>
+> - 2b. Invalid parameter format.  
+>   - 2b1. System displays error specifying invalid field.  
+>   - 2b2. Agent corrects input.  
+>   - Use case resumes from step 2.  
+>
+> - 3a. Duplicate detected.  
+>   - 3a1. System displays duplicate warning.  
+>   - Use case ends.  
+>
+> - 4a. Tag replacement error.  
+>   - 4a1. System rejects entire edit if one invalid tag is found.  
+>   - Use case ends.  
+>
+> - 4b. Storage failure occurs.  
+>   - 4b1. System displays: “Couldn’t save data. Your edit was cancelled.”  
+>   - Use case ends.  
 
 ### Locating persons by name: `find`
 
@@ -227,38 +216,31 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
-### Use case: `find` 
-<div style="border:2px solid #444; padding:10px; border-radius:8px;">
-System: Insurance Management App</br>
-Actor: Insurance Agent</br>
+### Use case: `find`
 
-MSS:
-
-1. Agent issues find STRING command.
-
-2. System searches client records by name, UID, email, or phone.
-
-3. System returns matching records in a tabular list (CLI) or as clickable results (GUI).
-
-4. Agent views or selects the desired client record.
-- Use case ends.</br>
-
-Extensions:
-
-- 2a. No matches found.
-- 2a1. System displays: “No clients matched the provided filters.”
-- Use case ends.</br>
-</br>
-- 2b. Invalid parameter provided (e.g., malformed input).
-- 2b1. System displays error specifying the issue (e.g., invalid characters).
-- 2b2. Agent re-enters correct input.
-- Use case resumes from step 2.</br>
-</br>
-- 2c. Conflicting filters applied.
-- 2c1. System displays: "No clients matched all provided filters."
-- Use case ends.
-
-</div>
+> **System:** Insurance Management App  
+> **Actor:** Insurance Agent  
+>
+> **MSS:**  
+> 1. Agent issues find STRING command.  
+> 2. System searches client records by name, UID, email, or phone.  
+> 3. System returns matching records in a tabular list (CLI) or as clickable results (GUI).  
+> 4. Agent views or selects the desired client record.  
+>    - Use case ends.  
+>
+> **Extensions:**  
+> - 2a. No matches found.  
+>   - 2a1. System displays: “No clients matched the provided filters.”  
+>   - Use case ends.  
+>
+> - 2b. Invalid parameter provided (e.g., malformed input).  
+>   - 2b1. System displays error specifying the issue (e.g., invalid characters).  
+>   - 2b2. Agent re-enters correct input.  
+>   - Use case resumes from step 2.  
+>
+> - 2c. Conflicting filters applied.  
+>   - 2c1. System displays: "No clients matched all provided filters."  
+>   - Use case ends.  
 
 
 ### Deleting a person : `delete`
@@ -275,28 +257,22 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
-### Use case: `delete` 
-<div style="border:2px solid #444; padding:10px; border-radius:8px;">
-System: Insurance Management App</br>
-Actor: Insurance Agent</br>
+### Use case: `delete`
 
-MSS:
-
-1. Agent issues delete INDEX command.
-
-2. System verifies the index.
-
-3. System deletes the client record at that index.
-
-4. System displays confirmation: “Deleted Person: <Client details>”.
-- Use case ends.
-
-Extensions:
-
-- 2a. Index out of bounds.
-- 2a1. System displays error: “Index not found.”
-- Use case ends.
-</div>
+> **System:** Insurance Management App  
+> **Actor:** Insurance Agent  
+>
+> **MSS:**  
+> 1. Agent issues delete INDEX command.  
+> 2. System verifies the index.  
+> 3. System deletes the client record at that index.  
+> 4. System displays confirmation: “Deleted Person: <Client details>”.  
+>    - Use case ends.  
+>
+> **Extensions:**  
+> - 2a. Index out of bounds.  
+>   - 2a1. System displays error: “Index not found.”  
+>   - Use case ends.  
 
 
 
@@ -319,27 +295,21 @@ Display the command guide.
 Format: `help`
 
 
-### Use case: `help` 
-<div style="border:2px solid #444; padding:10px; border-radius:8px;">
-System: Insurance Management App</br>
-Actor: Insurance Agent</br>
+### Use case: `help`
 
-MSS:
-
-1. Agent issues help command.
-
-2. System displays a list of commands with usage details.
-
-3. Agent reads and continues working.
-- Use case ends.</br>
-</br>
-
-Extensions:
-
-- 1a. Agent types synonym (e.g., guide, man).
-- 1a1. System displays: “Unknown command. Type help to see available commands.”
-- Use case ends.
-</div>
+> **System:** Insurance Management App  
+> **Actor:** Insurance Agent  
+>
+> **MSS:**  
+> 1. Agent issues help command.  
+> 2. System displays a list of commands with usage details.  
+> 3. Agent reads and continues working.  
+>    - Use case ends.  
+>
+> **Extensions:**  
+> - 1a. Agent types synonym (e.g., guide, man).  
+>   - 1a1. System displays: “Unknown command. Type help to see available commands.”  
+>   - Use case ends.  
 
 ### Command guide : `stats`
 
