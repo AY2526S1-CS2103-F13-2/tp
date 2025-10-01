@@ -348,28 +348,22 @@ Display the summary statistics.
 Format: `stats`
 
 
-### Use case: `stats` 
-<div style="border:2px solid #444; padding:10px; border-radius:8px;">
-System: Insurance Management App</br>
-Actor: Insurance Agent</br>
+### Use case: `stats`
 
-MSS:
-
-1. Agent issues stats command.
-
-2. System analyses customer data.
-
-3. System displays summary table (Packages vs. No. of Customers).
-
-4. Agent reviews performance insights.
-- Use case ends.</br>
-</br>
-
-Extensions:
-- 2a. No data available.
-- 2a1. System displays: “No statistics available – no clients found.”
-- Use case ends.
-</div>
+> **System:** Insurance Management App  
+> **Actor:** Insurance Agent  
+>
+> **MSS:**  
+> 1. Agent issues stats command.  
+> 2. System analyses customer data.  
+> 3. System displays summary table (Packages vs. No. of Customers).  
+> 4. Agent reviews performance insights.  
+>    - Use case ends.  
+>
+> **Extensions:**  
+> - 2a. No data available.  
+>   - 2a1. System displays: “No statistics available – no clients found.”  
+>   - Use case ends.  
 
 
 
