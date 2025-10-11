@@ -115,4 +115,21 @@ public class Person {
                 .toString();
     }
 
+    /**
+     * Creates and returns a deep copy of this Person.
+     *
+     * @return A deep copy of this Person.
+     */
+    public Person copy() {
+        Name copiedName = new Name(name.toString());
+        Phone copiedPhone = new Phone(phone.toString());
+        Email copiedEmail = new Email(email.toString());
+        Address copiedAddress = new Address(address.toString());
+        Set<Tag> copiedTags = new HashSet<>();
+        for (Tag tag : tags) {
+            copiedTags.add(new Tag(tag.tagName));
+        }
+        return new Person(copiedName, copiedPhone, copiedEmail, copiedAddress, copiedTags);
+    }
+
 }

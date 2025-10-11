@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -181,4 +183,34 @@ public class EditCommandTest {
         assertEquals(expected, editCommand.toString());
     }
 
+    @Test
+    public void undo_editCommand() throws CommandException {
+        Person originalPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        EditCommand.EditPersonDescriptor descriptor =
+                new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+        // Simulate execution
+        editCommand.execute(model);
+        // Call undo and check the result
+        String undoMessage = editCommand.undo(model);
+        assertFalse(undoMessage.isEmpty());
+        // Verify that the person has been restored to original
+        Person afterUndo = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        assertEquals(originalPerson, afterUndo);
+
+    }
+
+    @Test
+    public void undoCommand_failed_whenNoPersonEdited() {
+        EditCommand.EditPersonDescriptor descriptor =
+                new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+        assertThrows(IllegalStateException.class, () -> editCommand.undo(model));
+    }
+
+    @Test
+    public void is_mutable() {
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, DESC_AMY);
+        assertTrue(editCommand.isMutable());
+    }
 }

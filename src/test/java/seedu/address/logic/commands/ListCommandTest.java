@@ -1,6 +1,8 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.logic.commands.ListCommand.MESSAGE_SUCCESS;
@@ -89,5 +91,18 @@ public class ListCommandTest {
         assertEquals("Bernice", model.getFilteredPersonList().get(0).getName().fullName);
         assertEquals("James", model.getFilteredPersonList().get(1).getName().fullName);
         assertEquals("Roy", model.getFilteredPersonList().get(2).getName().fullName);
+    }
+
+    @Test
+    public void is_not_mutable() {
+        ListCommand listCommand = new ListCommand();
+        assertFalse(listCommand.isMutable());
+    }
+
+    @Test
+    public void undoCommand_notSupported() {
+        ListCommand listCommand = new ListCommand();
+        assertThrows(UnsupportedOperationException.class, () ->
+            listCommand.undo(model));
     }
 }

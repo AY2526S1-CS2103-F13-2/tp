@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
@@ -109,6 +110,38 @@ public class DeleteCommandTest {
         assertEquals(expected, deleteCommand.toString());
     }
 
+    @Test
+    public void undoCommand_deleteCommand_returnsUndoMessage() {
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
+        // Simulate execution
+        try {
+            deleteCommand.execute(model);
+        } catch (Exception e) {
+            // ignore for undo test
+        }
+        // Call undo and check the result
+        String undoMessage = deleteCommand.undo(model);
+        assertFalse(undoMessage.isEmpty());
+    }
+
+    @Test
+    public void undoCommand_deleteCommand_restoresDeletedPerson() throws Exception {
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
+        deleteCommand.execute(model);
+        deleteCommand.undo(model);
+        boolean found = model.getAddressBook().getPersonList().stream()
+                .anyMatch(p -> p.isSamePerson(personToDelete));
+        assertTrue(found);
+    }
+
+    @Test
+    public void undoCommand_failed_whenNoPersonDeleted() {
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
+        assertThrows(IllegalStateException.class, () -> deleteCommand.undo(model));
+    }
+
     /**
      * Updates {@code model}'s filtered list to show no one.
      */
@@ -116,5 +149,11 @@ public class DeleteCommandTest {
         model.updateFilteredPersonList(p -> false);
 
         assertTrue(model.getFilteredPersonList().isEmpty());
+    }
+
+    @Test
+    public void is_mutable() {
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
+        assertTrue(deleteCommand.isMutable());
     }
 }

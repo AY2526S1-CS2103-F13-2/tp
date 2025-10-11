@@ -1,10 +1,13 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.commands.Command;
 import seedu.address.model.person.Person;
 
 /**
@@ -70,6 +73,13 @@ public interface Model {
     void addPerson(Person person);
 
     /**
+     * Insert the given person at the given index.
+     * {@code person} must not already exist in the address book.
+     */
+
+    void insertPerson(Index index, Person person);
+
+    /**
      * Replaces the given person {@code target} with {@code editedPerson}.
      * {@code target} must exist in the address book.
      * The person identity of {@code editedPerson} must not be the same as another existing person in the address book.
@@ -89,4 +99,25 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Saves the mutable command history to support undo.
+     */
+    void pushMutableCommandHistory(Command command);
+
+    /**
+     * Saves the undo history to support redo.
+     */
+    void pushUndoCommandHistory(Command command);
+
+    /**
+     * Returns the last mutable command in the history.
+     */
+    Optional<Command> popLastMutableCommand();
+
+    /**
+     * Returns the last undo command in the history.
+     */
+    Optional<Command> popLastUndoCommand();
+
 }

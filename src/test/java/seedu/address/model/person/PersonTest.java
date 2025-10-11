@@ -101,4 +101,9 @@ public class PersonTest {
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", tags=" + ALICE.getTags() + "}";
         assertEquals(expected, ALICE.toString());
     }
+
+    @Test
+    public void equals_deepCopy_success() {
+        assertTrue(ALICE.equals(ALICE.copy()));
+    }
 }

@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -11,6 +13,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.commands.Command;
 import seedu.address.model.person.Person;
 
 /**
@@ -22,6 +26,10 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+
+    // Stacks for undo and redo functionality
+    private final Stack<Command> undoStack = new Stack<>();
+    private final Stack<Command> redoStack = new Stack<>();
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -105,6 +113,13 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void insertPerson(Index index, Person person) {
+        requireAllNonNull(index, person);
+        addressBook.insertPerson(index.getZeroBased(), person);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+    }
+
+    @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
 
@@ -148,6 +163,39 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons);
+    }
+
+    //=========== Undo/Redo ==================================================================================
+    @Override
+    public void pushMutableCommandHistory(Command command) {
+        if (command.isMutable()) {
+            undoStack.push(command);
+            redoStack.clear(); // Clear redo stack on new command
+        }
+    }
+
+    @Override
+    public Optional<Command> popLastMutableCommand() {
+        if (undoStack.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(undoStack.pop());
+    }
+
+    @Override
+    public void pushUndoCommandHistory(Command command) {
+        if (command.isMutable()) {
+            redoStack.push(command);
+        }
+    }
+
+    @Override
+    public Optional<Command> popLastUndoCommand() {
+        if (redoStack.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(redoStack.pop());
     }
 
 }

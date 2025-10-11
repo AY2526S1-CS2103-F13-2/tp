@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
 import seedu.address.testutil.PersonBuilder;
@@ -56,6 +58,19 @@ public class UniquePersonListTest {
     public void add_duplicatePerson_throwsDuplicatePersonException() {
         uniquePersonList.add(ALICE);
         assertThrows(DuplicatePersonException.class, () -> uniquePersonList.add(ALICE));
+    }
+
+    @Test
+    public void add_duplicatePersonInConstructor_throwsDuplicatePersonException() {
+        ObservableList<Person> listWithDuplicatePersons = FXCollections.observableArrayList();
+        listWithDuplicatePersons.addAll(Arrays.asList(ALICE, ALICE));
+        assertThrows(DuplicatePersonException.class, () -> new UniquePersonList(listWithDuplicatePersons));
+    }
+
+    @Test
+    public void insert_duplicatePerson_throwsDuplicatePersonException() {
+        uniquePersonList.add(ALICE);
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.insert(0, ALICE));
     }
 
     @Test
@@ -182,5 +197,10 @@ public class UniquePersonListTest {
     @Test
     public void toStringMethod() {
         assertEquals(uniquePersonList.asUnmodifiableObservableList().toString(), uniquePersonList.toString());
+    }
+
+    @Test
+    public void equal_differentTypes_returnsFalse() {
+        assertFalse(uniquePersonList.equals(1));
     }
 }

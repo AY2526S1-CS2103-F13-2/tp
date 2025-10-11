@@ -186,6 +186,39 @@ Format: `stats`
 |---------|---------------------------------------------------------|
 | Output  | Number of Customers: 6 <br/> #More stats coming soon... |
 
+### Undoing the last action : `undo`
+
+Reverts the most recent mutable action (add, delete, clear, or edit) performed during the current runtime.
+
+Format: `undo`
+
+* Only actions that change the address book (add, delete, clear, edit) can be undone.
+* Multiple undo operations can be performed in sequence to revert several actions, as long as they are all mutable actions from the current session.
+* Undo is only available for actions performed since the application was started (current runtime).
+
+**Examples:**
+* After adding a person, running `undo` will remove the newly added person.
+* After deleting a person, running `undo` will restore the deleted person.
+* After editing a person, running `undo` will revert the changes made.
+* After clearing the address book, running `undo` will restore all previously deleted entries.
+
+---
+
+### Redoing the last undone action : `redo`
+
+Reapplies the most recent sequence of undone mutable actions, as long as no new action has been performed since the last undo.
+
+Format: `redo`
+
+* Only actions that were previously undone using `undo` can be redone.
+* If you perform a new action (add, delete, clear, edit) after undoing, the redo history is cleared and you cannot redo the previous actions.
+* Multiple redo operations can be performed in sequence to reapply several undone actions, as long as no new action has interrupted the sequence.
+
+**Examples:**
+* After undoing an add, running `redo` will add the person back again.
+* After undoing a delete, running `redo` will delete the person again.
+* If you undo an edit and then perform a new add, you cannot redo the undone edit.
+
 
 ### Exiting the program : `exit`
 
@@ -239,4 +272,6 @@ Action | Format, Examples
 **Help** | `help`
 **Sort by tag** | `list t/<your tag here>` <br> e.g., `list t/friends`
 **Stats**| `stats`
+**Undo** | `undo`
+**Redo** | `redo`
 

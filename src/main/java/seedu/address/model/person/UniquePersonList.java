@@ -28,6 +28,27 @@ public class UniquePersonList implements Iterable<Person> {
     private final ObservableList<Person> internalUnmodifiableList =
             FXCollections.unmodifiableObservableList(internalList);
 
+    public UniquePersonList() {}
+
+    /**
+     * Creates a UniquePersonList using the Persons in the {@code persons} list.
+     * All persons in the list must be unique.
+     * All persons in the list will be deep copied to ensure immutability.
+     *
+     * @param persons A list of persons to be copied into this list.
+     * @throws DuplicatePersonException if there are any duplicate persons in the given list.
+     */
+    public UniquePersonList(ObservableList<Person> newPersons) {
+        requireAllNonNull(newPersons);
+        if (!personsAreUnique(newPersons)) {
+            throw new DuplicatePersonException();
+        }
+
+        for (Person person : newPersons) {
+            this.add(person.copy());
+        }
+    }
+
     /**
      * Returns true if the list contains an equivalent person as the given argument.
      */
@@ -46,6 +67,18 @@ public class UniquePersonList implements Iterable<Person> {
             throw new DuplicatePersonException();
         }
         internalList.add(toAdd);
+    }
+
+    /**
+     * Inserts a person to the list at the specified index.
+     * The person must not already exist in the list.
+     */
+    public void insert(int index, Person toAdd) {
+        requireNonNull(toAdd);
+        if (contains(toAdd)) {
+            throw new DuplicatePersonException();
+        }
+        internalList.add(index, toAdd);
     }
 
     /**
@@ -123,11 +156,10 @@ public class UniquePersonList implements Iterable<Person> {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof UniquePersonList)) {
+        if (!(other instanceof UniquePersonList otherUniquePersonList)) {
             return false;
         }
 
-        UniquePersonList otherUniquePersonList = (UniquePersonList) other;
         return internalList.equals(otherUniquePersonList.internalList);
     }
 

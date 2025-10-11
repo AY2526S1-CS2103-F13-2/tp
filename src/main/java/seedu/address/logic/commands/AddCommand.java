@@ -37,6 +37,8 @@ public class AddCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
+    public static final String MESSAGE_UNDO_SUCCESS = "Removed last added person: %1$s";
+    public static final String MESSAGE_UNDO_FAILED = "No person was added";
 
     private final Person toAdd;
 
@@ -58,6 +60,26 @@ public class AddCommand extends Command {
 
         model.addPerson(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
+    }
+
+    @Override
+    public boolean isMutable() {
+        return true;
+    }
+
+    /**
+     * Undoes the add command by deleting the person that was added.
+     * @param model
+     * @return String message indicating the person that was removed.
+     */
+    @Override
+    public String undo(Model model) {
+        requireNonNull(model);
+        if (!model.hasPerson(toAdd)) {
+            throw new IllegalStateException(MESSAGE_UNDO_FAILED);
+        }
+        model.deletePerson(toAdd);
+        return String.format(MESSAGE_UNDO_SUCCESS, Messages.format(toAdd));
     }
 
     @Override

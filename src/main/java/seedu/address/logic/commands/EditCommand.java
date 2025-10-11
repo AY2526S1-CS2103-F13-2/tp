@@ -51,9 +51,14 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_UNDO_SUCCESS = "Reverted last edit: %1$s";
+    public static final String MESSAGE_UNDO_FAILED = "No edit to revert.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
+
+    // to keep the current status of the person to be edited
+    private Person personToEdit = null;
 
     /**
      * @param index of the person in the filtered person list to edit
@@ -76,7 +81,7 @@ public class EditCommand extends Command {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        Person personToEdit = lastShownList.get(index.getZeroBased());
+        personToEdit = lastShownList.get(index.getZeroBased());
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
@@ -86,6 +91,22 @@ public class EditCommand extends Command {
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+    }
+
+    @Override
+    public boolean isMutable() {
+        return true;
+    }
+
+    @Override
+    public String undo(Model model) {
+        requireNonNull(model);
+        if (personToEdit != null) {
+            model.setPerson(model.getFilteredPersonList().get(index.getZeroBased()), personToEdit);
+            return String.format(MESSAGE_UNDO_SUCCESS, Messages.format(personToEdit));
+        } else {
+            throw new IllegalStateException(MESSAGE_UNDO_FAILED);
+        }
     }
 
     /**

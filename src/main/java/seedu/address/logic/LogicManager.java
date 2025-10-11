@@ -50,6 +50,11 @@ public class LogicManager implements Logic {
         Command command = addressBookParser.parseCommand(commandText);
         commandResult = command.execute(model);
 
+        // Only save the address book if the command mutates the data
+        if (command.isMutable()) {
+            model.pushMutableCommandHistory(command);
+        }
+
         try {
             storage.saveAddressBook(model.getAddressBook());
         } catch (AccessDeniedException e) {

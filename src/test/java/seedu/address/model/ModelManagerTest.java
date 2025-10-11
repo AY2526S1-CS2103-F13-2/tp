@@ -15,6 +15,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.CommandResult;
 import seedu.address.model.person.ClientMatchesPredicate;
 import seedu.address.testutil.AddressBookBuilder;
 
@@ -97,6 +99,25 @@ public class ModelManagerTest {
     public void checkSize_onePerson_returnsTrue() {
         modelManager.addPerson(ALICE);
         assertTrue(modelManager.getSize() == 1);
+    }
+
+    @Test
+    public void notMutableCommand_notPushedToStack() {
+        // an not mutable command
+        Command notMutableCommand = new Command() {
+            @Override
+            public CommandResult execute(Model model) {
+                return null;
+            }
+        };
+
+        // push it to the history stack
+        modelManager.pushMutableCommandHistory(notMutableCommand);
+        assertTrue(modelManager.popLastMutableCommand().isEmpty());
+
+        // push it to the undo stack
+        modelManager.pushUndoCommandHistory(notMutableCommand);
+        assertTrue(modelManager.popLastUndoCommand().isEmpty());
     }
 
     @Test
