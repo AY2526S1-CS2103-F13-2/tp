@@ -535,6 +535,44 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 > 1. Agent issues list command.  
 > 2. System displays all the persons in the address book.  
 > 3. Use case ends.  
+ 
+---
+
+### Use case: `clear`
+
+> **System:** Insurance Management App  
+> **Actor:** Insurance Agent
+>
+> **MSS:**
+> 1. Agent first started the application and there are dummy values initialized.
+> 2. Agent remove all entries by issuing clear command.
+> 3. Use case ends.
+
+
+---
+
+### Use case: `undo`
+> **System:** Insurance Management App
+> **Actor:** Insurance Agent
+>   
+> **MSS:**
+> 1. Agent accidentally ran a command eg. deleted all entries by issuing clear command.
+> 2. Agent issues undo command.
+> 3. System restores the previous state before the last mutable command.
+> 4. Use case ends.
+
+--- 
+
+### Use case: `redo`
+> **System:** Insurance Management App
+> **Actor:** Insurance Agent
+> 
+> **MSS:**
+> 1. Agent had undone a previous mutable command, but he changes his mind.
+> 2. Agent issues redo command.
+> 3. System reapplies the last undone mutable command.
+> 4. Use case ends.
+
 
 
 
