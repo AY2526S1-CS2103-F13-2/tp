@@ -37,7 +37,7 @@
               <items>
                   <!-- Left area for tag display -->
                   <StackPane VBox.vgrow="NEVER" fx:id="tagDisplayPlaceholder" styleClass="pane-with-border"
-                             minHeight="150" prefHeight="150" minWidth="200" prefWidth="200">
+                             minHeight="150" prefHeight="150" minWidth="220" prefWidth="220">
                       <padding>
                           <Insets top="5" right="10" bottom="5" left="10" />
                       </padding>

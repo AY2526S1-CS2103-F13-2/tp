@@ -12,6 +12,7 @@
     <children>
         <ListView fx:id="folderListView"
                   prefWidth="180.0"
+                  minWidth="180.0"
                   fixedCellSize="32.0"
                   AnchorPane.topAnchor="0.0"
                   AnchorPane.bottomAnchor="0.0"
