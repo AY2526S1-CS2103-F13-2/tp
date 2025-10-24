@@ -2,7 +2,6 @@
 !include style.puml
 skinparam ArrowFontStyle plain
 
-
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
@@ -58,12 +57,6 @@ opt command is mutable
     undoCommand -> clearCommand : undo(m)
     activate clearCommand
 
-    clearCommand -> Model : setAddressBook(oldAddressBook)
-    activate Model
-
-    Model --> clearCommand
-    deactivate Model
-
     clearCommand --> undoCommand : MESSAGE_UNDO_SUCCESS
     deactivate clearCommand
 
@@ -90,6 +83,7 @@ end
 
 undoCommand --> LogicManager
 deactivate undoCommand
+destroy undoCommand
 
 
 [<--LogicManager

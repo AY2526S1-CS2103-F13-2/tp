@@ -57,25 +57,6 @@ opt command is mutable
     RedoCommand -> clearCommand : execute(m)
     activate clearCommand
 
-    clearCommand -> Model : getAddressBook().getPersonList()
-    activate Model
-
-    Model --> clearCommand
-    deactivate Model
-
-    clearCommand -> Model : setAddressBook(new AddressBook())
-    activate Model
-
-    Model --> clearCommand
-    deactivate Model
-
-    create CommandResult
-    clearCommand -> CommandResult
-    activate CommandResult
-
-    CommandResult --> clearCommand
-    deactivate CommandResult
-
     clearCommand --> RedoCommand
     deactivate clearCommand
 
@@ -102,7 +83,7 @@ end
 
 RedoCommand --> LogicManager
 deactivate RedoCommand
-
+destroy RedoCommand
 
 [<--LogicManager
 deactivate LogicManager
