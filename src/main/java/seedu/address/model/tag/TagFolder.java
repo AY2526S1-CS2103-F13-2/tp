@@ -6,7 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 /** Making a tag folder feature */
-public final class TagFolder {
+public final class TagFolder implements Comparable<TagFolder> {
     private final String name;
     private final List<String> queryTags; // lower-cased tags this folder represents (1 or many)
     private final IntegerProperty count = new SimpleIntegerProperty();
@@ -61,5 +61,20 @@ public final class TagFolder {
 
     @Override public int hashCode() {
         return name.toLowerCase().hashCode();
+    }
+
+    /**
+     * Compares this TagFolder with another TagFolder for sorting purposes.
+     * The comparison is based on a case-insensitive alphabetical order of folder names.
+     * This method is primarily used to determine the order of TagFolders in the UI.
+     *
+     * @param other The other TagFolder to compare against.
+     * @return A negative integer, zero, or a positive integer as this TagFolder's name
+     *         is less than, equal to, or greater than the other TagFolder's name, ignoring case.
+     */
+    @Override
+    public int compareTo(TagFolder other) {
+        // Case-insensitive alphabetical order
+        return this.name.compareToIgnoreCase(other.name);
     }
 }

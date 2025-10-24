@@ -152,12 +152,7 @@ public interface Model {
 
     ObservableList<TagFolder> getActiveTagFolders();
 
-    void setActiveTagFolders(java.util.List<String> tagNames);
-
-    /** Back-compat alias used by some tests. */
-    default void addActiveTagFolders(List<String> tagNames) {
-        setActiveTagFolders(tagNames);
-    }
+    void addActiveTagFolders(List<String> tagNames);
 
     void addCompositeTagFolder(List<String> tagNames);
 

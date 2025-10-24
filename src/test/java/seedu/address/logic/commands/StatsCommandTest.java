@@ -291,8 +291,7 @@ public class StatsCommandTest {
         }
 
         @Override
-        public void setActiveTagFolders(List<String> tagNames) {
-
+        public void addActiveTagFolders(List<String> tagNames) {
         }
 
         @Override
@@ -302,7 +301,6 @@ public class StatsCommandTest {
 
         @Override
         public void refreshActiveTagFolderCounts() {
-
         }
     }
 

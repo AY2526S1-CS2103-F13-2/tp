@@ -8,11 +8,10 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/17"  xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <ListView fx:id="folderListView"
                   prefWidth="180.0"
-                  fixedCellSize="32.0"
                   AnchorPane.topAnchor="0.0"
                   AnchorPane.bottomAnchor="0.0"
                   AnchorPane.leftAnchor="0.0"

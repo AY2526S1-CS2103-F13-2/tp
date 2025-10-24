@@ -127,10 +127,6 @@ public class ListCommandParserSaveFolderTest {
             return FXCollections.observableArrayList();
         }
 
-        @Override
-        public void setActiveTagFolders(List<String> tagNames) {
-        }
-
         @Override public void refreshActiveTagFolderCounts() {
         }
     }
