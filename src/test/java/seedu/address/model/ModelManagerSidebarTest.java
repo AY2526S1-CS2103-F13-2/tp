@@ -28,7 +28,6 @@ class ModelManagerSidebarTest {
         for (String t : tagNames) {
             tags.add(new Tag(t));
         }
-        // note: if your PersonBuilder expects Set<Tag>, not String, use .withTags(tags)
         return new PersonBuilder().withName(name).withTags(String.valueOf(tags)).build();
     }
 
@@ -124,15 +123,15 @@ class ModelManagerSidebarTest {
         ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
         mm.addActiveTagFoldersFromUser(List.of("friends"));
         assertTrue(mm.hasTagFolder("friends"));
-        assertTrue(mm.hasTagFolder("FRIENDS"));  // case-insensitive
+        assertTrue(mm.hasTagFolder("FRIENDS"));
         assertFalse(mm.hasTagFolder("colleagues"));
     }
 
     @Test
     void addActiveTagFolders_nullOrEmpty_noChange() {
         ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
-        mm.addActiveTagFolders(null);           // early return
-        mm.addActiveTagFolders(List.of());      // early return
+        mm.addActiveTagFolders(null);
+        mm.addActiveTagFolders(List.of());
         assertEquals(0, mm.getActiveTagFolders().size());
     }
 
@@ -147,7 +146,7 @@ class ModelManagerSidebarTest {
     @Test
     void addCompositeTagFolderearlyReturn() {
         ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
-        mm.addCompositeTagFolder(List.of("   ", "\t", "")); // all blank → norm.isEmpty()
+        mm.addCompositeTagFolder(List.of("   ", "\t", ""));
         assertEquals(0, mm.getActiveTagFolders().size());
     }
 
@@ -155,16 +154,16 @@ class ModelManagerSidebarTest {
     void addActiveTagFoldersFromUser_nullEmptyBlank() {
         ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
 
-        mm.addActiveTagFoldersFromUser(null);      // early return
-        mm.addActiveTagFoldersFromUser(List.of()); // early return
-        mm.addActiveTagFoldersFromUser(List.of("   ")); // blank skipped
+        mm.addActiveTagFoldersFromUser(null);
+        mm.addActiveTagFoldersFromUser(List.of());
+        mm.addActiveTagFoldersFromUser(List.of("   "));
         assertEquals(0, mm.getActiveTagFolders().size());
 
         mm.addActiveTagFoldersFromUser(List.of("Friends"));
         assertTrue(mm.hasTagFolder("friends"));
         int before = mm.getActiveTagFolders().size();
 
-        mm.addActiveTagFoldersFromUser(List.of("friends")); // duplicate ignored
+        mm.addActiveTagFoldersFromUser(List.of("friends"));
         assertEquals(before, mm.getActiveTagFolders().size());
     }
 
@@ -172,13 +171,13 @@ class ModelManagerSidebarTest {
     void removeTagFolderByNamenullAndNotFoundandFound() {
         ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
 
-        assertFalse(mm.removeTagFolderByName(null));     // null → false
-        assertFalse(mm.removeTagFolderByName("missing"));// not found → false
+        assertFalse(mm.removeTagFolderByName(null));
+        assertFalse(mm.removeTagFolderByName("missing"));
 
         mm.addActiveTagFoldersFromUser(List.of("toRemove"));
         assertTrue(mm.hasTagFolder("toRemove"));
 
-        assertTrue(mm.removeTagFolderByName("toRemove"));// found → true
+        assertTrue(mm.removeTagFolderByName("toRemove"));
         assertFalse(mm.hasTagFolder("toRemove"));
     }
 
@@ -186,8 +185,8 @@ class ModelManagerSidebarTest {
     void addCompositeTagFolder_nullOrEmpty_returnsEarly() {
         ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
 
-        mm.addCompositeTagFolder(null);      // covers: tagNames == null -> return
-        mm.addCompositeTagFolder(List.of()); // covers: tagNames.isEmpty() -> return
+        mm.addCompositeTagFolder(null);
+        mm.addCompositeTagFolder(List.of());
 
         assertEquals(0, mm.getActiveTagFolders().size());
     }
@@ -206,8 +205,8 @@ class ModelManagerSidebarTest {
     void addCompositeTagFolderFromUser_nullOrEmpty_returnsEarly() {
         ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
 
-        mm.addCompositeTagFolderFromUser(null);      // covers: tagNames == null -> return
-        mm.addCompositeTagFolderFromUser(List.of()); // covers: tagNames.isEmpty() -> return
+        mm.addCompositeTagFolderFromUser(null);
+        mm.addCompositeTagFolderFromUser(List.of());
 
         assertEquals(0, mm.getActiveTagFolders().size());
     }
