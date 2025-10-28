@@ -129,25 +129,24 @@ public class MainWindow extends UiPart<Stage> {
 
         TagFolderListPanel tagFolderListPanel = new TagFolderListPanel(
                 logic.getActiveTagFolders(),
-                selectedFolders -> { // <-- name matches usage below
+                selectedFolders -> {
                     try {
-                        // build tags from folder names
-                        java.util.List<String> tags = selectedFolders.stream()
-                                .map(seedu.address.model.tag.TagFolder::getName)
+                        // Build t/<tag> tokens from the folder’s query tags (not the display name)
+                        String tagTokens = selectedFolders.stream()
+                                .flatMap(f -> f.getQueryTags().stream())
+                                .map(String::trim)
+                                .filter(s -> !s.isEmpty())
                                 .distinct()
-                                .toList();
+                                .map(t -> "t/" + t)
+                                .collect(java.util.stream.Collectors.joining(" "));
 
-                        String cmd = tags.isEmpty()
-                                ? "list"
-                                : "list " + tags.stream()
-                                        .map(t -> "t/" + t)
-                                        .collect(java.util.stream.Collectors.joining(" "));
-
+                        String cmd = tagTokens.isEmpty() ? "list" : "list " + tagTokens;
                         executeCommand(cmd);
                     } catch (Exception ignored) {
-                        // resultDisplay will already show any parse/exec error
+                        // resultDisplay already shows any parse/exec error
                     }
                 });
+
         tagDisplayPlaceholder.getChildren().add(tagFolderListPanel.getRoot());
     }
 
