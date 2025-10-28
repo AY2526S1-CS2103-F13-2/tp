@@ -74,4 +74,8 @@ run {
     enableAssertions = true
 }
 
+run {
+    enableAssertions = true
+}
+
 defaultTasks 'clean', 'test'
