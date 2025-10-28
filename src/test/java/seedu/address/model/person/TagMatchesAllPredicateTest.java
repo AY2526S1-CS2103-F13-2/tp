@@ -8,8 +8,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-
-import seedu.address.logic.commands.ListCommand;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -30,11 +28,10 @@ public class TagMatchesAllPredicateTest {
     }
 
     @Test
-    public void test_personHasOneOfRequiredTags_returnsTrue() {
-        // Person with only friends still matches (ANY semantics)
+    public void test_personHasAllRequiredTags_returnsTrue() {
         Person person = new PersonBuilder()
-                .withName("James Ho")
-                .withTags("friends")
+                .withName("Bernice Yu")
+                .withTags("friends", "colleagues")
                 .build();
 
         TagMatchesAllPredicate predicate =

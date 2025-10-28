@@ -16,6 +16,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -50,7 +51,7 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_listBySingleTag_filtersCorrectly() {
+    public void execute_listBySingleTag_filtersCorrectly() throws CommandException {
         // Create a minimal model with persons having tags
         AddressBook ab = new AddressBook();
         var bernice = new PersonBuilder().withName("Bernice").withTags("friends", "colleagues").build();
@@ -71,8 +72,8 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_listByMultipleTags_filtersUnion() {
-        // With OR semantics: friends OR colleagues -> Bernice, James, Roy (3)
+    public void execute_listByMultipleTags_filtersIntersection() throws CommandException {
+        // With AND semantics: friends AND colleagues -> only Bernice (1)
         AddressBook ab = new AddressBook();
         var bernice = new PersonBuilder().withName("Bernice").withTags("friends", "colleagues").build();
         var james = new PersonBuilder().withName("James").withTags("friends").build();
@@ -85,13 +86,13 @@ public class ListCommandTest {
         Set<Tag> required = new LinkedHashSet<>();
         required.add(new Tag("friends"));
         required.add(new Tag("colleagues"));
-        ListCommand cmd = new ListCommand(new TagMatchesAllPredicate(required)); // now "ANY" internally
+
+        // TagMatchesAllPredicate now truly means "must have ALL"
+        ListCommand cmd = new ListCommand(new TagMatchesAllPredicate(required));
         cmd.execute(model);
 
-        assertEquals(3, model.getFilteredPersonList().size());
+        assertEquals(1, model.getFilteredPersonList().size());
         assertEquals("Bernice", model.getFilteredPersonList().get(0).getName().fullName);
-        assertEquals("James", model.getFilteredPersonList().get(1).getName().fullName);
-        assertEquals("Roy", model.getFilteredPersonList().get(2).getName().fullName);
     }
 
     @Test

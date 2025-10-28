@@ -302,6 +302,26 @@ public class StatsCommandTest {
         @Override
         public void refreshActiveTagFolderCounts() {
         }
+
+        @Override
+        public boolean hasTagFolder(String name) {
+            return false;
+        }
+
+        @Override
+        public void addActiveTagFoldersFromUser(List<String> tagNames) {
+
+        }
+
+        @Override
+        public void addCompositeTagFolderFromUser(List<String> tagNames) {
+
+        }
+
+        @Override
+        public boolean removeTagFolderByName(String name) {
+            return false;
+        }
     }
 
     /**

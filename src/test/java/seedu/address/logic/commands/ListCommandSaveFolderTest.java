@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -25,7 +26,6 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.tag.FeatureTag;
 import seedu.address.model.tag.Tag;
-
 
 /**
  * Focused tests for the "save folder" behaviour of ListCommand.
@@ -39,7 +39,9 @@ public class ListCommandSaveFolderTest {
         private Predicate<Person> lastPredicate;
         private boolean addActiveCalled = false;
         private boolean addCompositeCalled = false;
+        private boolean removedCalled = false;
         private List<String> capturedTags = new ArrayList<>();
+        private final java.util.Set<String> existing = new java.util.HashSet<>();
 
         // --- Sidebar API we care about ---
         @Override
@@ -56,7 +58,7 @@ public class ListCommandSaveFolderTest {
 
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
-            lastPredicate = predicate;
+            this.lastPredicate = predicate;
         }
 
         @Override
@@ -80,71 +82,139 @@ public class ListCommandSaveFolderTest {
         }
 
         // --- The rest are harmless stubs / no-ops ---
-        @Override public ReadOnlyAddressBook getAddressBook() {
+        @Override
+        public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();
         }
-        @Override public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
+
+        @Override
+        public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
         }
-        @Override public ReadOnlyUserPrefs getUserPrefs() {
+
+        @Override
+        public ReadOnlyUserPrefs getUserPrefs() {
             return null;
         }
-        @Override public GuiSettings getGuiSettings() {
+
+        @Override
+        public GuiSettings getGuiSettings() {
             return null;
         }
-        @Override public void setGuiSettings(GuiSettings guiSettings) {
+
+        @Override
+        public void setGuiSettings(GuiSettings guiSettings) {
         }
-        @Override public Path getAddressBookFilePath() {
+
+        @Override
+        public Path getAddressBookFilePath() {
             return null;
         }
-        @Override public void setAddressBookFilePath(Path addressBookFilePath) {
+
+        @Override
+        public void setAddressBookFilePath(Path addressBookFilePath) {
         }
-        @Override public void setAddressBook(ReadOnlyAddressBook addressBook) {
+
+        @Override
+        public void setAddressBook(ReadOnlyAddressBook addressBook) {
         }
-        @Override public boolean hasPerson(Person person) {
+
+        @Override
+        public boolean hasPerson(Person person) {
             return false;
         }
-        @Override public void deletePerson(Person target) {
+
+        @Override
+        public void deletePerson(Person target) {
         }
-        @Override public void addPerson(Person person) {
+
+        @Override
+        public void addPerson(Person person) {
         }
-        @Override public void insertPerson(Index index, Person person) {
+
+        @Override
+        public void insertPerson(Index index, Person person) {
         }
-        @Override public void setPerson(Person target, Person editedPerson) {
+
+        @Override
+        public void setPerson(Person target, Person editedPerson) {
         }
-        @Override public int getSize() {
+
+        @Override
+        public int getSize() {
             return 0;
         }
-        @Override public ObservableList<Person> getFilteredPersonList() {
-            return FXCollections.observableArrayList();
-        }
-        @Override public ObservableList<Person> getPersonListCopy() {
-            return FXCollections.observableArrayList();
-        }
-        @Override public void pushMutableCommandHistory(Command command) {
-        }
-        @Override public Optional<Command> popLastMutableCommand() {
-            return Optional.empty();
-        }
-        @Override public void pushUndoCommandHistory(Command command) {
-        }
-        @Override public Optional<Command> popLastUndoCommand() {
-            return Optional.empty();
-        }
-        @Override public javafx.collections.ObservableList<seedu.address.model.tag.TagFolder> getActiveTagFolders() {
+
+        @Override
+        public ObservableList<Person> getFilteredPersonList() {
             return FXCollections.observableArrayList();
         }
 
-        @Override public void refreshActiveTagFolderCounts() {
+        @Override
+        public ObservableList<Person> getPersonListCopy() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public void pushMutableCommandHistory(Command command) {
+        }
+
+        @Override
+        public Optional<Command> popLastMutableCommand() {
+            return Optional.empty();
+        }
+
+        @Override
+        public void pushUndoCommandHistory(Command command) {
+        }
+
+        @Override
+        public Optional<Command> popLastUndoCommand() {
+            return Optional.empty();
+        }
+
+        @Override
+        public javafx.collections.ObservableList<seedu.address.model.tag.TagFolder> getActiveTagFolders() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
+        public void refreshActiveTagFolderCounts() {
+        }
+
+        @Override
+        public boolean hasTagFolder(String name) {
+            return name != null && existing.contains(name.toLowerCase());
+        }
+
+        @Override
+        public void addActiveTagFoldersFromUser(List<String> tagNames) {
+            addActiveCalled = true;
+            capturedTags = List.copyOf(tagNames);
+        }
+
+        @Override
+        public void addCompositeTagFolderFromUser(List<String> tagNames) {
+            addCompositeCalled = true;
+            capturedTags = List.copyOf(tagNames);
+        }
+
+        @Override
+        public boolean removeTagFolderByName(String name) {
+            if (name == null) {
+                return false;
+            }
+            removedCalled = existing.remove(name.toLowerCase());
+            return removedCalled;
         }
     }
 
     @Test
-    void execute_singleTagWithSave_callsAddActive() {
+    void execute_singleTagWithSave_callsAddActive() throws CommandException {
         CaptureModelStub model = new CaptureModelStub();
         Predicate<Person> any = p -> true;
 
         List<String> tags = List.of("friends"); // single
-        new ListCommand(any, tags, /*saveFolder=*/true).execute(model);
+        new ListCommand(any, tags, true, false).execute(model);
 
         assertTrue(model.addActiveCalled);
         assertFalse(model.addCompositeCalled);
@@ -153,12 +223,12 @@ public class ListCommandSaveFolderTest {
     }
 
     @Test
-    void execute_multipleTagsWithSave_callsAddComposite() {
+    void execute_multipleTagsWithSave_callsAddComposite() throws CommandException {
         CaptureModelStub model = new CaptureModelStub();
         Predicate<Person> any = p -> true;
 
         List<String> tags = List.of("friends", "colleagues");
-        new ListCommand(any, tags, /*saveFolder=*/true).execute(model);
+        new ListCommand(any, tags, true, false).execute(model);
 
         assertTrue(model.addCompositeCalled);
         assertFalse(model.addActiveCalled);
@@ -167,12 +237,12 @@ public class ListCommandSaveFolderTest {
     }
 
     @Test
-    void execute_withSaveButNoTags_doesNotTouchSidebar() {
+    void execute_withSaveButNoTags_doesNotTouchSidebar() throws CommandException {
         CaptureModelStub model = new CaptureModelStub();
         Predicate<Person> any = p -> true;
 
         // tag list is empty -> no sidebar calls
-        new ListCommand(any, List.of(), /*saveFolder=*/true).execute(model);
+        new ListCommand(any, List.of(), true, false).execute(model);
 
         assertFalse(model.addActiveCalled);
         assertFalse(model.addCompositeCalled);
@@ -181,12 +251,12 @@ public class ListCommandSaveFolderTest {
     }
 
     @Test
-    void execute_withoutSave_doesNotTouchSidebar() {
+    void execute_withoutSave_doesNotTouchSidebar() throws CommandException {
         CaptureModelStub model = new CaptureModelStub();
         Predicate<Person> any = p -> true;
 
         // saveFolder=false -> filter only
-        new ListCommand(any, List.of("friends"), /*saveFolder=*/false).execute(model);
+        new ListCommand(any, List.of("friends"), false, false).execute(model);
 
         assertFalse(model.addActiveCalled);
         assertFalse(model.addCompositeCalled);
@@ -195,7 +265,7 @@ public class ListCommandSaveFolderTest {
     }
 
     @Test
-    void execute_listAllPath_setsShowAllPredicateAndNoSidebarCalls() {
+    void execute_listAllPath_setsShowAllPredicateAndNoSidebarCalls() throws CommandException {
         CaptureModelStub model = new CaptureModelStub();
 
         CommandResult result = new ListCommand().execute(model);
@@ -214,9 +284,9 @@ public class ListCommandSaveFolderTest {
         Predicate<Person> any = p -> true;
         Predicate<Person> none = p -> false;
 
-        ListCommand a = new ListCommand(any, List.of("x"), true);
-        ListCommand b = new ListCommand(any, List.of("y"), false); // different flags/tags but same predicate
-        ListCommand c = new ListCommand(none, List.of("x"), true);
+        ListCommand a = new ListCommand(any, List.of("x"), true, false);
+        ListCommand b = new ListCommand(any, List.of("y"), false, false);
+        ListCommand c = new ListCommand(none, List.of("x"), true, false);
         ListCommand d = new ListCommand(); // null predicate
 
         assertTrue(a.equals(b)); // equal because predicates equal
@@ -225,5 +295,17 @@ public class ListCommandSaveFolderTest {
         assertTrue(d.equals(new ListCommand())); // both null predicate
         assertFalse(a.equals(null));
         assertFalse(a.equals("not-a-listcommand"));
+    }
+
+    @Test
+    void execute_deleteSingleTag_callsRemove() throws CommandException {
+        CaptureModelStub model = new CaptureModelStub();
+        model.existing.add("friends");
+        Predicate<Person> any = p -> true;
+
+        new ListCommand(any, List.of("friends"), /*save=*/false, /*delete=*/true).execute(model);
+
+        assertTrue(model.removedCalled);
+        assertFalse(model.existing.contains("friends"));
     }
 }

@@ -10,22 +10,43 @@ public final class TagFolder implements Comparable<TagFolder> {
     private final String name;
     private final List<String> queryTags; // lower-cased tags this folder represents (1 or many)
     private final IntegerProperty count = new SimpleIntegerProperty();
+    private final boolean userCreated;
 
     /** Single-tag folder. */
     public TagFolder(String name, int count) {
-        this(name, count, List.of(name));
+        this(name, count, List.of(name), false);
     }
 
     /** Composite or single-tag folder. queryTags should be lower-cased. */
     public TagFolder(String name, int count, List<String> queryTags) {
+        this(name, count, queryTags, false);
+    }
+
+    /** Full ctor (used for user-created folders). */
+    public TagFolder(String name, int count, List<String> queryTags, boolean userCreated) {
         this.name = name;
         this.count.set(count);
         this.queryTags = List.copyOf(queryTags);
+        this.userCreated = userCreated;
     }
 
     // factory for composites
-    public static TagFolder composite(String displayName, java.util.List<String> queryTags) {
-        return new TagFolder(displayName, 0, queryTags);
+    public static TagFolder composite(String displayName, List<String> queryTags) {
+        return new TagFolder(displayName, 0, queryTags, false);
+    }
+
+    /** factory for single-tag user folder */
+    public static TagFolder userSingle(String displayName) {
+        return new TagFolder(displayName, 0, List.of(displayName), true);
+    }
+
+    /** factory for composites created by the user */
+    public static TagFolder userComposite(String displayName, List<String> queryTags) {
+        return new TagFolder(displayName, 0, queryTags, /*userCreated*/ true);
+    }
+
+    public boolean isUserCreated() {
+        return userCreated;
     }
 
     public String getName() {

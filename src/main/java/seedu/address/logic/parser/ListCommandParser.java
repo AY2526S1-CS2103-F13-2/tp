@@ -1,10 +1,10 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DELETE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SAVE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -36,34 +36,33 @@ import seedu.address.model.tag.Tag;
 public class ListCommandParser implements Parser<ListCommand> {
     @Override
     public ListCommand parse(String args) throws ParseException {
-        // 0) Pull a trailing lone "s" off the raw args first, so it doesn't get
-        // glued to the last t/ value by the tokenizer.
-        String raw = args == null ? "" : args.trim();
-        boolean saveFolder = false;
-        if (!raw.isEmpty() && raw.matches(".*\\s+s\\s*$")) {
-            // ends with whitespace + 's' (and optional trailing whitespace)
-            saveFolder = true;
-            raw = raw.replaceFirst("\\s+s\\s*$", "");
+        final ArgumentMultimap map = ArgumentTokenizer.tokenize(args, PREFIX_TAG, PREFIX_SAVE, PREFIX_DELETE);
+
+        final List<String> tagValues = map.getAllValues(PREFIX_TAG);
+        final boolean wantsSave = !map.getAllValues(PREFIX_SAVE).isEmpty();
+        final boolean wantsDelete = !map.getAllValues(PREFIX_DELETE).isEmpty();
+
+        if (wantsSave && wantsDelete) {
+            throw new ParseException("You cannot save and delete a folder in the same command.");
         }
 
-        // 1) Tokenize normally (now without the trailing 's')
-        ArgumentMultimap map = ArgumentTokenizer.tokenize(raw, PREFIX_TAG);
-
-        // 2) Collect tag values
-        List<String> tagValues = map.getAllValues(PREFIX_TAG);
-
         if (tagValues.isEmpty()) {
-            // no tags -> plain list-all; ignore 's'
+            if (wantsDelete) {
+                throw new ParseException("Specify at least one tag with d/ to choose a folder to "
+                        + "delete, e.g. `list t/friends d/`.");
+            }
+            if (wantsSave) {
+                throw new ParseException("You cannot create a nameless folder."
+                        + "Add at least one tag, e.g. `list t/friends s/`.");
+            }
             return new ListCommand();
         }
 
-        // 3) Build predicate
-        Set<Tag> required = new LinkedHashSet<>();
+        final java.util.Set<Tag> required = new java.util.LinkedHashSet<>();
         for (String v : tagValues) {
             required.add(ParserUtil.parseTag(v));
         }
 
-        // 4) Pass tags and the save flag to the command
-        return new ListCommand(new TagMatchesAllPredicate(required), tagValues, saveFolder);
+        return new ListCommand(new TagMatchesAllPredicate(required), tagValues, wantsSave, wantsDelete);
     }
 }

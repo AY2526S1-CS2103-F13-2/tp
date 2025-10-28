@@ -159,4 +159,11 @@ public interface Model {
     /** Recompute the badge counts for all active folders. */
     void refreshActiveTagFolderCounts();
 
+    boolean hasTagFolder(String name);
+
+    void addActiveTagFoldersFromUser(List<String> tagNames);
+
+    void addCompositeTagFolderFromUser(List<String> tagNames);
+
+    boolean removeTagFolderByName(String name);
 }

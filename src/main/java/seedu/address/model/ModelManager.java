@@ -278,17 +278,27 @@ public class ModelManager implements Model {
         if (tagNames == null || tagNames.isEmpty()) {
             return;
         }
-
+        boolean added = false;
         for (String raw : tagNames) {
-            String key = raw.toLowerCase();
-            if (!folderIndex.containsKey(key)) {
-                activeFolders.add(new TagFolder(raw, 1)); // single-tag folder
+            String display = raw == null ? "" : raw.trim();
+            if (display.isEmpty()) {
+                continue;
             }
-        }
-        refreshActiveTagFolderCounts();
 
-        // Keep folders sorted
-        sortFolders();
+            // Use display name to check duplicates
+            if (hasTagFolder(display)) {
+                continue;
+            }
+
+            // Start with count 0; we'll recompute counts below
+            activeFolders.add(new TagFolder(display, 0)); // single-tag folder
+            added = true;
+        }
+
+        if (added) {
+            refreshActiveTagFolderCounts();
+            sortFolders(); // rebuilds folderIndex keyed by display names
+        }
     }
 
     @Override
@@ -305,7 +315,7 @@ public class ModelManager implements Model {
         }
 
         // Remove folders with zero count
-        activeFolders.removeIf(folder -> folder.getCount() == 0);
+        activeFolders.removeIf(folder -> !folder.isUserCreated() && folder.getCount() == 0);
     }
 
     @Override
@@ -314,9 +324,9 @@ public class ModelManager implements Model {
             return;
         }
 
-        // Normalise: trim, lower-case, distinct, sorted (so "b a" == "a b")
+        // Normalise: trim, lower-case, distinct, sorted (stable display ordering)
         List<String> norm = tagNames.stream()
-                .map(s -> s.trim().toLowerCase())
+                .map(s -> s == null ? "" : s.trim().toLowerCase())
                 .filter(s -> !s.isEmpty())
                 .distinct()
                 .sorted()
@@ -326,21 +336,21 @@ public class ModelManager implements Model {
             return;
         }
 
-        String key = String.join("&", norm);
-        if (folderIndex.containsKey(key)) {
-            // already saved; just make sure counts are fresh
-            refreshActiveTagFolderCounts();
-            return;
-        }
         // Display name like "friends & colleagues"
         String display = String.join(" & ", norm);
 
-        // TagFolder must carry the query tags of a composite
-        TagFolder folder = TagFolder.composite(display, norm); // see helper below
+        if (hasTagFolder(display)) {
+            // already saved; just refresh counts and return
+            refreshActiveTagFolderCounts();
+            return;
+        }
+
+        // TagFolder must carry query tags of a composite
+        TagFolder folder = TagFolder.composite(display, norm);
         activeFolders.add(folder);
-        folderIndex.put(key, activeFolders.size() - 1);
 
         refreshActiveTagFolderCounts();
+        sortFolders(); // rebuild folderIndex keyed by display names
     }
 
     private void bootstrapAllTags() {
@@ -371,5 +381,87 @@ public class ModelManager implements Model {
         for (int i = 0; i < activeFolders.size(); i++) {
             folderIndex.put(activeFolders.get(i).getName().toLowerCase(), i);
         }
+    }
+
+    @Override
+    public boolean hasTagFolder(String name) {
+        if (name == null) {
+            return false;
+        }
+        String target = name.trim().toLowerCase();
+        for (TagFolder f : activeFolders) {
+            if (f.getName().toLowerCase().equals(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void addActiveTagFoldersFromUser(List<String> tagNames) {
+        if (tagNames == null || tagNames.isEmpty()) {
+            return;
+        }
+
+        boolean added = false;
+        for (String raw : tagNames) {
+            String display = raw == null ? "" : raw.trim();
+            if (display.isEmpty()) {
+                continue;
+            }
+            if (hasTagFolder(display)) {
+                continue;
+            }
+            activeFolders.add(TagFolder.userSingle(display));
+            added = true;
+        }
+        if (added) {
+            refreshActiveTagFolderCounts();
+            sortFolders();
+        }
+    }
+
+    @Override
+    public void addCompositeTagFolderFromUser(List<String> tagNames) {
+        if (tagNames == null || tagNames.isEmpty()) {
+            return;
+        }
+
+        List<String> norm = tagNames.stream()
+                .map(s -> s == null ? "" : s.trim().toLowerCase())
+                .filter(s -> !s.isEmpty())
+                .distinct()
+                .sorted()
+                .toList();
+        if (norm.isEmpty()) {
+            return;
+        }
+
+        String display = String.join(" & ", norm);
+        if (hasTagFolder(display)) {
+            refreshActiveTagFolderCounts();
+            return;
+        }
+
+        activeFolders.add(TagFolder.userComposite(display, norm)); // <-- userCreated=true
+        refreshActiveTagFolderCounts();
+        sortFolders();
+    }
+
+    @Override
+    public boolean removeTagFolderByName(String name) {
+        if (name == null) {
+            return false;
+        }
+        String target = name.trim().toLowerCase();
+
+        for (int i = 0; i < activeFolders.size(); i++) {
+            if (activeFolders.get(i).getName().toLowerCase().equals(target)) {
+                activeFolders.remove(i);
+                sortFolders();
+                return true;
+            }
+        }
+        return false;
     }
 }
