@@ -2,9 +2,11 @@ package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -202,5 +204,18 @@ public class ListCommandParserSaveFolderTest {
         assertEquals(ListCommand.MESSAGE_SUCCESS, r.getFeedbackToUser());
         assertFalse(model.addActiveCalled);
         assertFalse(model.addCompositeCalled);
+    }
+
+    @Test
+    void parse_withTags_saveOrDelete_okay() throws Exception {
+        ListCommandParser parser = new ListCommandParser();
+
+        // save path
+        ListCommand saveCmd = parser.parse(" t/friends s/");
+        assertTrue(saveCmd != null); // parsing succeeded
+
+        // delete path
+        ListCommand delCmd = parser.parse(" t/friends d/");
+        assertTrue(delCmd != null); // parsing succeeded
     }
 }

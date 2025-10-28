@@ -262,4 +262,11 @@ public class ModelManagerTest {
         assertNotNull(modelManager.getActiveTagFolders());
     }
 
+    @Test
+    void equals_returnsFalse_whenOtherIsNotModelManager() {
+        ModelManager mm = new ModelManager(new AddressBook(), new UserPrefs());
+        assertFalse(mm.equals("not-a-model-manager"));
+    }
+
+
 }
