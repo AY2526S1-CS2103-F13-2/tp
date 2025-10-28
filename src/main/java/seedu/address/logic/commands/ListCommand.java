@@ -21,7 +21,7 @@ public class ListCommand extends Command {
             + "Examples:\n"
             + "  list\n"
             + "  list t/policyholder";
-    public static final String MESSAGE_LIST_BY_TAG_PREFIX = "Listed persons who ";
+    public static final String MESSAGE_LIST_BY_TAG_PREFIX = "Listed person(s) who ";
     public static final String MESSAGE_SUCCESS = "Listed all persons";
 
     public static final String MANUAL = String.join("\n",

@@ -23,8 +23,7 @@ public class TagMatchesAllPredicate implements Predicate<Person> {
 
     @Override
     public boolean test(Person person) {
-        // Return true if the person has at least one matching tag
-        return person.getTags().stream().anyMatch(required::contains);
+        return person.getTags().containsAll(required);
     }
 
     @Override
@@ -36,6 +35,6 @@ public class TagMatchesAllPredicate implements Predicate<Person> {
 
     @Override
     public String toString() {
-        return "has ANY tag in: " + required;
+        return "tags must include " + required;
     }
 }
