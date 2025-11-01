@@ -22,7 +22,9 @@ import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -99,6 +101,7 @@ public class EditCommand extends Command {
 
     // to keep the current status of the person to be edited
     private Person personToEdit = null;
+    private ReadOnlyAddressBook currentAddressBook = null;
 
     /**
      * @param index of the person in the filtered person list to edit
@@ -121,7 +124,8 @@ public class EditCommand extends Command {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        personToEdit = lastShownList.get(index.getZeroBased());
+        personToEdit = personToEdit == null ? lastShownList.get(index.getZeroBased()) : personToEdit;
+        currentAddressBook = new AddressBook(model.getAddressBook().getPersonList());
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
@@ -146,7 +150,7 @@ public class EditCommand extends Command {
     public String undo(Model model) {
         requireNonNull(model);
         if (personToEdit != null) {
-            model.setPerson(model.getFilteredPersonList().get(index.getZeroBased()), personToEdit);
+            model.setAddressBook(currentAddressBook);
             return String.format(MESSAGE_UNDO_SUCCESS, personToEdit);
         } else {
             throw new IllegalStateException(MESSAGE_UNDO_FAILED);

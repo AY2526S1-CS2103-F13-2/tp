@@ -269,13 +269,15 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
         // Simulate execution
-        editCommand.execute(model);
+        CommandResult result = editCommand.execute(model);
         // Call undo and check the result
         String undoMessage = editCommand.undo(model);
         assertFalse(undoMessage.isEmpty());
         // Verify that the person has been restored to original
         Person afterUndo = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         assertEquals(originalPerson, afterUndo);
+
+        assertEquals(result, editCommand.execute(model));
 
     }
 

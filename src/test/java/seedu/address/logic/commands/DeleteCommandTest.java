@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -111,18 +112,18 @@ public class DeleteCommandTest {
     }
 
     @Test
-    public void undoCommand_deleteCommand_returnsUndoMessage() {
+    public void undoCommand_deleteCommand_returnsUndoMessage() throws CommandException {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
         // Simulate execution
-        try {
-            deleteCommand.execute(model);
-        } catch (Exception e) {
-            // ignore for undo test
-        }
+
+        CommandResult initialResult = deleteCommand.execute(model);
         // Call undo and check the result
         String undoMessage = deleteCommand.undo(model);
         assertFalse(undoMessage.isEmpty());
+
+        // Check redo again
+        assertEquals(initialResult, deleteCommand.execute(model));
     }
 
     @Test

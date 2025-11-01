@@ -8,7 +8,9 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
 
 /**
@@ -47,6 +49,7 @@ public class DeleteCommand extends Command {
     private final Index targetIndex;
 
     private Person personToDelete = null;
+    private ReadOnlyAddressBook currentAddressBook = null;
 
     public DeleteCommand(Index targetIndex) {
         this.targetIndex = targetIndex;
@@ -57,11 +60,12 @@ public class DeleteCommand extends Command {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (targetIndex.getZeroBased() >= lastShownList.size()) {
+        if (personToDelete == null && targetIndex.getZeroBased() >= lastShownList.size()) {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        personToDelete = lastShownList.get(targetIndex.getZeroBased());
+        currentAddressBook = new AddressBook(model.getAddressBook().getPersonList());
+        personToDelete = personToDelete == null ? lastShownList.get(targetIndex.getZeroBased()) : personToDelete;
         model.deletePerson(personToDelete);
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
@@ -89,7 +93,7 @@ public class DeleteCommand extends Command {
 
         if (personToDelete != null) {
             // Re-insert the deleted person at the original index
-            model.insertPerson(targetIndex, personToDelete);
+            model.setAddressBook(currentAddressBook);
             return String.format(MESSAGE_UNDO_SUCCESS, Messages.format(personToDelete));
         } else {
             throw new IllegalStateException(MESSAGE_UNDO_FAILED);
