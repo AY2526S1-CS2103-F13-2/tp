@@ -107,6 +107,14 @@ public class LogicManagerTest {
         prefPath.toFile().delete();
     }
 
+
+    @Test
+    public void execute_storageOnNullPath_throwsCommandException() {
+        // Simulate IOException during storage save and file accessible
+        assertCommandFailureForExceptionFromStorage(DUMMY_IO_EXCEPTION, String.format(
+                LogicManager.FILE_OPS_ERROR_FORMAT, DUMMY_IO_EXCEPTION.getMessage()), null);
+    }
+
     @Test
     public void execute_storageThrowsAdException_throwsCommandException() {
         assertCommandFailureForExceptionFromStorage(DUMMY_AD_EXCEPTION, String.format(
