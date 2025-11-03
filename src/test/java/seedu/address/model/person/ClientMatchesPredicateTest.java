@@ -177,4 +177,93 @@ public class ClientMatchesPredicateTest {
         assertEquals(a.hashCode(), b.hashCode());
         assertNotEquals(a.hashCode(), c.hashCode());
     }
+
+    // ===============================================================
+    // Additional coverage tests for logging and edge cases
+    // ===============================================================
+
+    @Test
+    @DisplayName("Test with single character keyword matches")
+    public void test_singleCharacterKeyword_returnsTrue() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Collections.singletonList("a"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice").build()));
+    }
+
+    @Test
+    @DisplayName("Test with keyword matching only email domain")
+    public void test_emailDomainMatch_returnsTrue() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Collections.singletonList("example.com"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Bob")
+                .withPhone("91234567").withEmail("bob@example.com").build()));
+    }
+
+    @Test
+    @DisplayName("Test with keyword matching phone area code")
+    public void test_phoneAreaCodeMatch_returnsTrue() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Collections.singletonList("91"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Charlie")
+                .withPhone("91234567").withEmail("charlie@example.com").build()));
+    }
+
+    @Test
+    @DisplayName("Test with mixed blank and valid keywords")
+    public void test_mixedBlankAndValidKeywords_returnsTrue() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Arrays.asList("   ", "Alice", "\t"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice").build()));
+    }
+
+    @Test
+    @DisplayName("Test no match across all fields")
+    public void test_noMatchAcrossAllFields_returnsFalse() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Collections.singletonList("xyz123"));
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice Bob")
+                .withPhone("91234567").withEmail("alice@example.com").build()));
+    }
+
+    @Test
+    @DisplayName("Test with special characters in keyword")
+    public void test_specialCharactersInKeyword_worksCorrectly() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Collections.singletonList("@example"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice")
+                .withPhone("91234567").withEmail("alice@example.com").build()));
+    }
+
+    @Test
+    @DisplayName("Test with numeric keyword matching phone")
+    public void test_numericKeywordMatchingPhone_returnsTrue() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Collections.singletonList("123"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Agent Smith")
+                .withPhone("91234567").withEmail("agent@example.com").build()));
+    }
+
+    @Test
+    @DisplayName("Test with very long keyword")
+    public void test_veryLongKeyword_worksCorrectly() {
+        String longKeyword = "verylongkeywordthatdoesnotmatchanything";
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Collections.singletonList(longKeyword));
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice").build()));
+    }
+
+    @Test
+    @DisplayName("Test multiple keywords with first matching")
+    public void test_multipleKeywordsFirstMatches_returnsTrue() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Arrays.asList("Alice", "xyz", "abc"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice").build()));
+    }
+
+    @Test
+    @DisplayName("Test multiple keywords with last matching")
+    public void test_multipleKeywordsLastMatches_returnsTrue() {
+        ClientMatchesPredicate predicate = new ClientMatchesPredicate(Arrays.asList("xyz", "abc", "Alice"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice").build()));
+    }
+
+    @Test
+    @DisplayName("Test case variations")
+    public void test_caseVariations_allMatch() {
+        Person person = new PersonBuilder().withName("Alice").build();
+        assertTrue(new ClientMatchesPredicate(Collections.singletonList("alice")).test(person));
+        assertTrue(new ClientMatchesPredicate(Collections.singletonList("ALICE")).test(person));
+        assertTrue(new ClientMatchesPredicate(Collections.singletonList("AlIcE")).test(person));
+    }
 }

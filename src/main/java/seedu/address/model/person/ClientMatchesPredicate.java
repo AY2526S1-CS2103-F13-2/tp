@@ -33,7 +33,6 @@ public final class ClientMatchesPredicate implements Predicate<Person> {
     @Override
     public boolean test(Person person) {
         Objects.requireNonNull(person, "Person to test cannot be null");
-
         // Assertion: Person should have at least a name (business logic requirement)
         assert person.getName() != null : "Person should always have a name";
 
@@ -54,7 +53,6 @@ public final class ClientMatchesPredicate implements Predicate<Person> {
                 continue;
             }
             final String k = kw.toLowerCase();
-
             // Check each field and log which field matched
             if (contains(name, k)) {
                 logger.fine("Keyword '" + k + "' matched name: " + name);
@@ -69,7 +67,6 @@ public final class ClientMatchesPredicate implements Predicate<Person> {
                 return true;
             }
         }
-
         logger.finer("No match found for person: " + person.getName());
         return false;
     }
@@ -85,7 +82,6 @@ public final class ClientMatchesPredicate implements Predicate<Person> {
     private static boolean contains(String field, String kw) {
         // Assertion: keyword should not be empty when this method is called
         assert kw != null && !kw.isEmpty() : "Keyword should not be null or empty";
-
         return field != null && field.contains(kw);
     }
 
