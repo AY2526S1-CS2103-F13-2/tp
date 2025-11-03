@@ -2,6 +2,9 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
@@ -9,7 +12,7 @@ import seedu.address.model.person.ClientMatchesPredicate;
 
 /**
  * Finds and lists all persons in address book whose name contains any of the argument keywords.
- * Keyword matching is case insensitive.
+ * Keyword matching is case-insensitive.
  */
 public class FindCommand extends Command {
 
@@ -45,18 +48,39 @@ public class FindCommand extends Command {
             "  https://ay2526s1-cs2103-f13-2.github.io/tp/UserGuide.html#locating-persons-by-name-find"
     );
 
+    private static final Logger logger = LogsCenter.getLogger(FindCommand.class);
+
     private final ClientMatchesPredicate predicate;
 
+    /**
+     * Creates a FindCommand to filter persons based on the given predicate.
+     *
+     * @param predicate the predicate to filter persons
+     * @throws NullPointerException if predicate is null
+     */
     public FindCommand(ClientMatchesPredicate predicate) {
         this.predicate = predicate;
+        logger.fine("Created FindCommand with predicate: " + predicate);
     }
 
     @Override
     public CommandResult execute(Model model) {
-        requireNonNull(model);
+        requireNonNull(model, "Model cannot be null");
+
+        logger.info("Executing find command with predicate: " + predicate);
+
+        // Get count before filtering for logging purposes
+        int totalPersons = model.getFilteredPersonList().size();
+
         model.updateFilteredPersonList(predicate);
+
+        int matchedPersons = model.getFilteredPersonList().size();
+
+        logger.info(String.format("Find command completed. Found %d person(s) matching criteria (from %d total)",
+                matchedPersons, totalPersons));
+
         return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
+                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, matchedPersons));
     }
 
     @Override
