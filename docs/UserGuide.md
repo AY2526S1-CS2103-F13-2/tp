@@ -55,7 +55,7 @@ The following keybinds are available in Ethical Insurance
 
 ![Keybinds](images/Keybinds.png)
 
-- Up Arrow (↑): Goes back to previous command in history.
+- Up Arrow (↑): Goes back to previous success command in history for current runtime. The history is cleared upon exiting the app.
 - Down Arrow (↓): Goes forward to next command in history or empties command box when reach the end of history.
 
 --------------------------------------------------------------------------------------------------------------------
@@ -189,6 +189,21 @@ Another person with the same <code>NAME</code> (case-insensitive) and <code>PHON
 - A name must not exceed 100 characters.
 - Cannot contain **numbers** inside the name or any other special symbols.
 
+<div markdown="block" class="alert alert-info">
+
+**:information_source: Note on `name` and `address` Parameters**
+
+The `/` character is **allowed** in both `name` and `address` fields.  
+However, users should be aware that text resembling a command parameter (e.g., `p/`, `e/`, `a/`) **will still be interpreted as a parameter prefix** by the parser.
+
+For example:
+`n/ p/eter` will cause the parser to treat `p/eter` as the start of the **phone** parameter, not as part of the name.
+
+✅ **Tip:**  
+If you need to include text like `p/` or `e/` inside a name or address, consider capitalizing the letter following the slash (e.g., `P/eter`) to avoid misinterpretation.
+
+</div>
+
 **Examples**
 
 | Valid         | Invalid        |
@@ -243,6 +258,21 @@ The phone number should only contain digits.
 **Address:**
 - Must **not be blank**.
 - Only printable ASCII characters allowed.
+
+<div markdown="block" class="alert alert-info">
+
+**:information_source: Note on `name` and `address` Parameters**
+
+The `/` character is **allowed** in both `name` and `address` fields.  
+However, users should be aware that text resembling a command parameter (e.g., `p/`, `e/`, `a/`) **will still be interpreted as a parameter prefix** by the parser.
+
+For example:
+`n/ p/eter` will cause the parser to treat `p/eter` as the start of the **phone** parameter, not as part of the name.
+
+✅ **Tip:**  
+If you need to include text like `p/` or `e/` inside a name or address, consider capitalizing the letter following the slash (e.g., `P/eter`) to avoid misinterpretation.
+
+</div>
 
 **Examples**
 
@@ -341,7 +371,7 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 | Command                    | Description / Result                                                |
 |----------------------------|---------------------------------------------------------------------|
 | `find alex`                | Lists all clients with “alex” in their name, phone, or email.       |
-| `find 9123`                | Lists clients whose phone number contains “9123”.                   |
+| `find 9123`                | Lists clients whose phone number and/or email contains “9123”.      |
 | `find gmail.com`           | Lists clients using Gmail addresses.                                |
 | `find alex 9123 gmail.com` | Lists clients whose name, phone, or email matches any of the terms. |
 
@@ -403,8 +433,8 @@ Examples: [See result in 'Viewing Summary Statistics'](#viewing-summary-statisti
 **Parameter restrictions:**
 **All parameters must contain only printable ASCII characters**
 - **Please note that Biz tags are different from the entry Tags above.**
-- **Feature and Tag:** A tag name should contain only English letters, digits, or '-' (dash). It must start and end with a letter or digit, and must not exceed 40 characters. Tags are case-insensitive. 
- _Example: friend, VIP, family-member, project2025_
+- **Feature and Tag:** A tag name should contain only English letters, digits, or '-' (dash). It must start and end with a letter or digit, and must not exceed 40 characters. Tags are case-insensitive and normalised to capitalised letter.
+  - _Example: friend, VIP, family-member, project2025_
 
 
 ### Undeclaring Features and Tags from Statistics: `unbiz`
@@ -454,7 +484,7 @@ Key - Features: Tags
 
 ![Sample table view](images/StatsOutputExample.png)
 
-### Undoing the last action : `undo`
+### Undoing the last mutable action : `undo`
 
 Reverts the most recent mutable action (`add`, `delete`, `clear`, `edit`, `biz`, `unbiz`, or `list` with `s/` or `d/` flags) performed during the current runtime.
 
@@ -523,9 +553,17 @@ Ethical Insurance address book data are saved in the hard disk automatically aft
 
 #### Data recovery & backup
 
-<div markdown="span" class="alert alert-warning">
-:exclamation: **Caution:** If the data file becomes invalid or corrupted, Ethical Insurance will **discard the file and start with an empty dataset** on the next run. Keep periodic backups so you can restore quickly.
+<div markdown="block" class="alert alert-warning">
+
+**:warning: Caution:**  
+If the data file becomes invalid or corrupted, Ethical Insurance will **discard the file and start with an empty dataset** on the next run.  
+Keep periodic backups so you can restore data quickly.
+
+When the target data file exists but the file or its containing directory has **permission issues**, the program may not start correctly.  
+Select a folder where the application has write permission, or ensure the file either has the correct permissions or does not exist in that directory.
+
 </div>
+
 
 **Where is my data stored?**  
 `[JAR location]/data/addressbook.json`
@@ -643,10 +681,11 @@ It is cosmetic and does not impact stored data or usability.
 | **Add**                         | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
 | **Clear**                       | `clear`                                                                                                                                                               |
 | **Delete**                      | `delete INDEX`<br> e.g., `delete 3`                                                                                                                                   |
-| **Edit**                        | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [{t/ \| at/ \| dt/}TAG]...`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`                          |
+| **Edit**                        | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [TAG]...`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`                                            |
 | **Find**                        | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`                                                                                                            |
 | **List**                        | `list`                                                                                                                                                                |
 | **List by tag**                 | `list t/<your tag here>` <br> e.g., `list t/friends`                                                                                                                  |
+| **Create and save folder**      | `list t/<your tag here> s/` <br> e.g., `list t/friends s/`                                                                                                            |
 | **Create and save folder**      | `list t/<your tag here> s/` <br> e.g., `list t/friends s/`                                                                                                            |
 | **Delete folder**               | `list t/<your tag here> d/` <br> e.g., `list t/friends d/`                                                                                                            |
 | **Help**                        | `help`                                                                                                                                                                |

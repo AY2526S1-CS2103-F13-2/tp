@@ -33,7 +33,7 @@ public class UndoCommand extends Command {
             "  undo",
             "",
             "SEE MORE",
-            "  https://ay2526s1-cs2103-f13-2.github.io/tp/UserGuide.html#undoing-the-last-action--undo"
+            "  https://ay2526s1-cs2103-f13-2.github.io/tp/UserGuide.html#undoing-the-last-mutable-action--undo"
     );
 
     @Override

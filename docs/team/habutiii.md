@@ -85,7 +85,7 @@ Given below are my contributions to the project.
     * Reviewed **most** of the PRs in the project
       * Some PRs (with non-trivial review comments): [#112](), [#313](), [#166](), [#78]().
       * These are a portion of the PRs that I have provided design feedback, suggested corrections and simplifications.
-    * Also helped team members to fix bugs related to their features/components (PRs [#213](), [#194](), [#147](), [#96]()).
+    * Also helped team members to fix bugs related to their features/components (PRs [#337]() [#213](), [#194](), [#147](), [#96]()).
     * Reported bugs and cross-team suggestions during integration testing for the class project: [#104](), [#97]()
     * Actively participated in discussions helping others integrate undo ideas, resolve debug issues and pass the code coverage checks.
       * Mentored junior team members on Git workflows, testing strategies, and design patterns used in the project.
