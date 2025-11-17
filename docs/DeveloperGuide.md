@@ -13,7 +13,7 @@ Application based on [_SE-EDU AB3_](https://github.com/se-edu/addressbook-level3
 
 ### AI usage Declaration
 As per Megane Wong:
- ChatGPT was used to assist with the following tasks:
+ ChatGPT 5 was used to assist with the following tasks
    - Generating JUnit tests to meet code coverage requirements and identify new bugs through test cases
    - Assisting with the generation of Javadoc comments
    - Debugging complex multi file errors to help identify their source
